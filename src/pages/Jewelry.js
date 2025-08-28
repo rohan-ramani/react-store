@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ProductCard from '../components/ProductCard';
 
-class Jewelry extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      jewelryProducts: [
+function Jewelry({ onAddToCart }) {
+  const [jewelryProducts] = useState([
         {
           id: 2,
           name: "Art Deco Pearl Necklace",
@@ -84,12 +81,7 @@ class Jewelry extends Component {
           isRare: false,
           category: "jewelry"
         }
-      ]
-    };
-  }
-
-  render() {
-    const { onAddToCart } = this.props;
+      ]);
 
     return (
       <div className="jewelry-page">
@@ -133,7 +125,7 @@ class Jewelry extends Component {
           <div className="products-container">
             <h2>Available Jewelry</h2>
             <div className="products-grid">
-              {this.state.jewelryProducts.map(product => (
+              {jewelryProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -193,7 +185,6 @@ class Jewelry extends Component {
         </section>
       </div>
     );
-  }
 }
 
 export default Jewelry;

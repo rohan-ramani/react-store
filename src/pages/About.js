@@ -1,33 +1,26 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class About extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      teamMembers: [
-        {
-          name: "Eleanor Whitmore",
-          title: "Founder & Chief Curator",
-          bio: "With over 30 years in the antiques trade, Eleanor brings unparalleled expertise in European decorative arts.",
-          image: "https://images.unsplash.com/photo-1494790108755-2616c9c9b8d3?w=200&h=200&fit=crop&crop=face"
-        },
-        {
-          name: "James Chen",
-          title: "Asian Art Specialist",
-          bio: "Former museum curator specializing in Chinese and Japanese antiquities with a PhD in Art History.",
-          image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
-        },
-        {
-          name: "Isabella Rodriguez",
-          title: "Jewelry Expert",
-          bio: "Certified gemologist and vintage jewelry specialist with expertise in authentication and valuation.",
-          image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face"
-        }
-      ]
-    };
-  }
-
-  render() {
+function About() {
+  const [teamMembers] = useState([
+    {
+      name: "Eleanor Whitmore",
+      title: "Founder & Chief Curator",
+      bio: "With over 30 years in the antiques trade, Eleanor brings unparalleled expertise in European decorative arts.",
+      image: "https://images.unsplash.com/photo-1494790108755-2616c9c9b8d3?w=200&h=200&fit=crop&crop=face"
+    },
+    {
+      name: "James Chen",
+      title: "Asian Art Specialist",
+      bio: "Former museum curator specializing in Chinese and Japanese antiquities with a PhD in Art History.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+    },
+    {
+      name: "Isabella Rodriguez",
+      title: "Jewelry Expert",
+      bio: "Certified gemologist and vintage jewelry specialist with expertise in authentication and valuation.",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face"
+    }
+  ]);
     return (
       <div className="about-page">
         <section className="about-hero">
@@ -96,7 +89,7 @@ class About extends Component {
           <div className="team-container">
             <h2>Meet Our Experts</h2>
             <div className="team-grid">
-              {this.state.teamMembers.map((member, index) => (
+              {teamMembers.map((member, index) => (
                 <div key={index} className="team-member">
                   <img src={member.image} alt={member.name} className="member-photo" />
                   <h3>{member.name}</h3>
@@ -193,7 +186,6 @@ class About extends Component {
         </section>
       </div>
     );
-  }
 }
 
 export default About;
