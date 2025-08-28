@@ -1,57 +1,53 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback } from 'react';
 import ProductCard from '../components/ProductCard';
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      featuredProducts: [
-        {
-          id: 1,
-          name: "Victorian Mahogany Writing Desk",
-          era: "Victorian Era (1860s)",
-          description: "Exquisite mahogany writing desk with intricate brass fittings and secret compartments.",
-          price: 2850,
-          originalPrice: 3200,
-          condition: "Excellent",
-          origin: "England",
-          image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: true,
-          category: "furniture"
-        },
-        {
-          id: 3,
-          name: "Ming Dynasty Porcelain Vase",
-          era: "Ming Dynasty (16th Century)",
-          description: "Rare blue and white porcelain vase with traditional dragon motifs.",
-          price: 8500,
-          condition: "Good",
-          origin: "China",
-          image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: true,
-          category: "art"
-        },
-        {
-          id: 5,
-          name: "Louis XVI Armchair",
-          era: "Louis XVI Period (1780s)",
-          description: "Authentic French armchair with original silk upholstery and gilded wood frame.",
-          price: 4200,
-          condition: "Very Good",
-          origin: "France",
-          image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: true,
-          category: "furniture"
-        }
-      ]
-    };
-  }
+function Home({ onAddToCart, onNavigate }) {
+  const [featuredProducts] = useState([
+    {
+      id: 1,
+      name: "Victorian Mahogany Writing Desk",
+      era: "Victorian Era (1860s)",
+      description: "Exquisite mahogany writing desk with intricate brass fittings and secret compartments.",
+      price: 2850,
+      originalPrice: 3200,
+      condition: "Excellent",
+      origin: "England",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: true,
+      category: "furniture"
+    },
+    {
+      id: 3,
+      name: "Ming Dynasty Porcelain Vase",
+      era: "Ming Dynasty (16th Century)",
+      description: "Rare blue and white porcelain vase with traditional dragon motifs.",
+      price: 8500,
+      condition: "Good",
+      origin: "China",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: true,
+      category: "art"
+    },
+    {
+      id: 5,
+      name: "Louis XVI Armchair",
+      era: "Louis XVI Period (1780s)",
+      description: "Authentic French armchair with original silk upholstery and gilded wood frame.",
+      price: 4200,
+      condition: "Very Good",
+      origin: "France",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: true,
+      category: "furniture"
+    }
+  ]);
 
-  render() {
-    const { onAddToCart } = this.props;
+  const handleNavigate = useCallback((page) => {
+    onNavigate(page);
+  }, [onNavigate]);
 
     return (
       <div className="home-page">
@@ -64,7 +60,7 @@ class Home extends Component {
               features authentic antiques from around the globe, each piece telling its own 
               unique story of craftsmanship and heritage.
             </p>
-            <button className="cta-button" onClick={() => this.props.onNavigate('products')}>
+            <button className="cta-button" onClick={() => handleNavigate('products')}>
               Explore Collection
             </button>
           </div>
@@ -106,7 +102,7 @@ class Home extends Component {
             <h2>Featured Treasures</h2>
             <p className="section-subtitle">Handpicked exceptional pieces from our collection</p>
             <div className="featured-grid">
-              {this.state.featuredProducts.map(product => (
+              {featuredProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -116,7 +112,7 @@ class Home extends Component {
             </div>
             <button 
               className="view-all-button"
-              onClick={() => this.props.onNavigate('products')}
+              onClick={() => handleNavigate('products')}
             >
               View All Products
             </button>
@@ -153,7 +149,6 @@ class Home extends Component {
         </section>
       </div>
     );
-  }
 }
 
 export default Home;

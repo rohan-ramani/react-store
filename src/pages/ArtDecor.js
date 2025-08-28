@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ProductCard from '../components/ProductCard';
 
-class ArtDecor extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      artProducts: [
+function ArtDecor({ onAddToCart }) {
+  const [artProducts] = useState([
         {
           id: 3,
           name: "Ming Dynasty Porcelain Vase",
@@ -84,12 +81,7 @@ class ArtDecor extends Component {
           isRare: false,
           category: "art"
         }
-      ]
-    };
-  }
-
-  render() {
-    const { onAddToCart } = this.props;
+      ]);
 
     return (
       <div className="art-decor-page">
@@ -134,7 +126,7 @@ class ArtDecor extends Component {
           <div className="products-container">
             <h2>Available Art & Decor</h2>
             <div className="products-grid">
-              {this.state.artProducts.map(product => (
+              {artProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -194,7 +186,6 @@ class ArtDecor extends Component {
         </section>
       </div>
     );
-  }
 }
 
 export default ArtDecor;

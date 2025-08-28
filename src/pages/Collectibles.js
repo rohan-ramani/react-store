@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ProductCard from '../components/ProductCard';
 
-class Collectibles extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      collectiblesProducts: [
+function Collectibles({ onAddToCart }) {
+  const [collectiblesProducts] = useState([
         {
           id: 4,
           name: "Edwardian Silver Tea Set",
@@ -84,12 +81,7 @@ class Collectibles extends Component {
           isRare: true,
           category: "collectibles"
         }
-      ]
-    };
-  }
-
-  render() {
-    const { onAddToCart } = this.props;
+      ]);
 
     return (
       <div className="collectibles-page">
@@ -134,7 +126,7 @@ class Collectibles extends Component {
           <div className="products-container">
             <h2>Available Collectibles</h2>
             <div className="products-grid">
-              {this.state.collectiblesProducts.map(product => (
+              {collectiblesProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -194,7 +186,6 @@ class Collectibles extends Component {
         </section>
       </div>
     );
-  }
 }
 
 export default Collectibles;
