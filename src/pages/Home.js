@@ -1,5 +1,6 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useMemo } from 'react';
 import ProductCard from '../components/ProductCard';
+import { useImagePreloader, extractImageUrls } from '../utils/imagePreloader';
 
 const Home = memo(({ onAddToCart, onNavigate }) => {
   const [featuredProducts] = useState([
@@ -52,6 +53,14 @@ const Home = memo(({ onAddToCart, onNavigate }) => {
   const handleViewAllClick = useCallback(() => {
     onNavigate('products');
   }, [onNavigate]);
+
+  const imageUrls = useMemo(() => {
+    const productImages = extractImageUrls(featuredProducts);
+    const heroImage = "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=600&h=400&fit=crop";
+    return [...productImages, heroImage];
+  }, [featuredProducts]);
+
+  useImagePreloader(imageUrls);
 
   return (
     <div className="home-page">

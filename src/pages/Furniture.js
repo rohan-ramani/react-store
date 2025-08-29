@@ -1,5 +1,6 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import ProductCard from '../components/ProductCard';
+import { useImagePreloader, extractImageUrls } from '../utils/imagePreloader';
 
 const Furniture = memo(({ onAddToCart }) => {
   const [furnitureProducts] = useState([
@@ -83,6 +84,12 @@ const Furniture = memo(({ onAddToCart }) => {
       category: "furniture"
     }
   ]);
+
+  const imageUrls = useMemo(() => {
+    return extractImageUrls(furnitureProducts);
+  }, [furnitureProducts]);
+
+  useImagePreloader(imageUrls);
 
   return (
     <div className="furniture-page">

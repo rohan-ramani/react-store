@@ -1,4 +1,5 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
+import { useImagePreloader } from '../utils/imagePreloader';
 
 const About = memo(() => {
   const [teamMembers] = useState([
@@ -21,6 +22,14 @@ const About = memo(() => {
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face"
     }
   ]);
+
+  const imageUrls = useMemo(() => {
+    const memberImages = teamMembers.map(member => member.image);
+    const storyImage = "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=500&h=400&fit=crop";
+    return [...memberImages, storyImage];
+  }, [teamMembers]);
+
+  useImagePreloader(imageUrls);
 
   return (
     <div className="about-page">

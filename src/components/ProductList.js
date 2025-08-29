@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, memo } from 'react';
 import ProductCard from './ProductCard';
+import { useImagePreloader, extractImageUrls } from '../utils/imagePreloader';
 
 const ProductList = memo(({ onAddToCart, searchTerm }) => {
   const [sortBy, setSortBy] = useState('name');
@@ -131,6 +132,12 @@ const ProductList = memo(({ onAddToCart, searchTerm }) => {
 
     return filtered;
   }, [products, searchTerm, filterBy, sortBy]);
+
+  const imageUrls = useMemo(() => {
+    return extractImageUrls(products);
+  }, [products]);
+
+  useImagePreloader(imageUrls);
 
   return (
     <div className="product-list">

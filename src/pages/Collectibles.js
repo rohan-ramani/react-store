@@ -1,5 +1,6 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import ProductCard from '../components/ProductCard';
+import { useImagePreloader, extractImageUrls } from '../utils/imagePreloader';
 
 const Collectibles = memo(({ onAddToCart }) => {
   const [collectiblesProducts] = useState([
@@ -82,6 +83,12 @@ const Collectibles = memo(({ onAddToCart }) => {
       category: "collectibles"
     }
   ]);
+
+  const imageUrls = useMemo(() => {
+    return extractImageUrls(collectiblesProducts);
+  }, [collectiblesProducts]);
+
+  useImagePreloader(imageUrls);
 
   return (
     <div className="collectibles-page">
