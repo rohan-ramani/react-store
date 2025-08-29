@@ -1,29 +1,23 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class Footer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      subscribed: false
-    };
-  }
+const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
 
-  handleEmailChange = (e) => {
-    this.setState({ email: e.target.value });
-  }
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
 
-  handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = (e) => {
     e.preventDefault();
-    if (this.state.email) {
-      this.setState({ subscribed: true, email: '' });
+    if (email) {
+      setSubscribed(true);
+      setEmail('');
       setTimeout(() => {
-        this.setState({ subscribed: false });
+        setSubscribed(false);
       }, 3000);
     }
-  }
-
-  render() {
+  };
     const currentYear = new Date().getFullYear();
 
     return (
@@ -64,12 +58,12 @@ class Footer extends Component {
           <div className="footer-section">
             <h4>Newsletter</h4>
             <p>Stay updated with our latest finds and exclusive offers.</p>
-            <form onSubmit={this.handleNewsletterSubmit} className="newsletter-form">
+            <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
               <input
                 type="email"
                 placeholder="Enter your email"
-                value={this.state.email}
-                onChange={this.handleEmailChange}
+                value={email}
+                onChange={handleEmailChange}
                 className="newsletter-input"
                 required
               />
@@ -77,7 +71,7 @@ class Footer extends Component {
                 Subscribe
               </button>
             </form>
-            {this.state.subscribed && (
+            {subscribed && (
               <p className="subscription-success">Thank you for subscribing!</p>
             )}
           </div>
@@ -95,7 +89,6 @@ class Footer extends Component {
         </div>
       </footer>
     );
-  }
-}
+};
 
 export default Footer;

@@ -1,36 +1,27 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class ProductCard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isHovered: false
-    };
-  }
+const ProductCard = ({ product, onAddToCart }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
-  handleMouseEnter = () => {
-    this.setState({ isHovered: true });
-  }
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
 
-  handleMouseLeave = () => {
-    this.setState({ isHovered: false });
-  }
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
-  handleAddToCart = () => {
-    if (this.props.onAddToCart) {
-      this.props.onAddToCart(this.props.product);
+  const handleAddToCart = () => {
+    if (onAddToCart) {
+      onAddToCart(product);
     }
-  }
-
-  render() {
-    const { product } = this.props;
-    const { isHovered } = this.state;
+  };
 
     return (
       <div 
         className={`product-card ${isHovered ? 'hovered' : ''}`}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <div className="product-image-container">
           <img 
@@ -67,7 +58,7 @@ class ProductCard extends Component {
             
             <button 
               className="add-to-cart-btn"
-              onClick={this.handleAddToCart}
+              onClick={handleAddToCart}
               disabled={!product.inStock}
             >
               {product.inStock ? 'Add to Cart' : 'Sold Out'}
@@ -76,7 +67,6 @@ class ProductCard extends Component {
         </div>
       </div>
     );
-  }
-}
+};
 
 export default ProductCard;

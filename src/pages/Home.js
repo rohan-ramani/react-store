@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ProductCard from '../components/ProductCard';
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      featuredProducts: [
+const Home = ({ onAddToCart, onNavigate }) => {
+  const [featuredProducts] = useState([
         {
           id: 1,
           name: "Victorian Mahogany Writing Desk",
@@ -47,11 +44,7 @@ class Home extends Component {
           category: "furniture"
         }
       ]
-    };
-  }
-
-  render() {
-    const { onAddToCart } = this.props;
+  );
 
     return (
       <div className="home-page">
@@ -64,7 +57,7 @@ class Home extends Component {
               features authentic antiques from around the globe, each piece telling its own 
               unique story of craftsmanship and heritage.
             </p>
-            <button className="cta-button" onClick={() => this.props.onNavigate('products')}>
+            <button className="cta-button" onClick={() => onNavigate('products')}>
               Explore Collection
             </button>
           </div>
@@ -106,7 +99,7 @@ class Home extends Component {
             <h2>Featured Treasures</h2>
             <p className="section-subtitle">Handpicked exceptional pieces from our collection</p>
             <div className="featured-grid">
-              {this.state.featuredProducts.map(product => (
+              {featuredProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -116,7 +109,7 @@ class Home extends Component {
             </div>
             <button 
               className="view-all-button"
-              onClick={() => this.props.onNavigate('products')}
+              onClick={() => onNavigate('products')}
             >
               View All Products
             </button>
@@ -153,7 +146,6 @@ class Home extends Component {
         </section>
       </div>
     );
-  }
-}
+};
 
 export default Home;

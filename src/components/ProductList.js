@@ -1,13 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ProductCard from './ProductCard';
 
-class ProductList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sortBy: 'name',
-      filterBy: 'all',
-      products: [
+const ProductList = ({ onAddToCart, searchTerm }) => {
+  const [sortBy, setSortBy] = useState('name');
+  const [filterBy, setFilterBy] = useState('all');
+  const [products] = useState([
         {
           id: 1,
           name: "Victorian Mahogany Writing Desk",
@@ -88,23 +85,22 @@ class ProductList extends Component {
           category: "jewelry"
         }
       ]
-    };
-  }
+  );
 
-  handleSortChange = (e) => {
-    this.setState({ sortBy: e.target.value });
-  }
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
 
-  handleFilterChange = (e) => {
-    this.setState({ filterBy: e.target.value });
-  }
+  const handleFilterChange = (e) => {
+    setFilterBy(e.target.value);
+  };
 
-  getSortedAndFilteredProducts = () => {
-    let filteredProducts = this.state.products;
+  const getSortedAndFilteredProducts = () => {
+    let filteredProducts = products;
 
     // Apply search filter if provided
-    if (this.props.searchTerm) {
-      const searchLower = this.props.searchTerm.toLowerCase();
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
       filteredProducts = filteredProducts.filter(product =>
         product.name.toLowerCase().includes(searchLower) ||
         product.description.toLowerCase().includes(searchLower) ||
@@ -113,15 +109,15 @@ class ProductList extends Component {
     }
 
     // Apply category filter
-    if (this.state.filterBy !== 'all') {
+    if (filterBy !== 'all') {
       filteredProducts = filteredProducts.filter(product =>
-        product.category === this.state.filterBy
+        product.category === filterBy
       );
     }
 
     // Apply sorting
     filteredProducts.sort((a, b) => {
-      switch (this.state.sortBy) {
+      switch (sortBy) {
         case 'price-low':
           return a.price - b.price;
         case 'price-high':
@@ -135,11 +131,9 @@ class ProductList extends Component {
     });
 
     return filteredProducts;
-  }
+  };
 
-  render() {
-    const { onAddToCart } = this.props;
-    const products = this.getSortedAndFilteredProducts();
+  const filteredProducts = getSortedAndFilteredProducts();
 
     return (
       <div className="product-list">
@@ -150,8 +144,8 @@ class ProductList extends Component {
               <label htmlFor="filter">Filter by Category:</label>
               <select
                 id="filter"
-                value={this.state.filterBy}
-                onChange={this.handleFilterChange}
+                value={filterBy}
+                onChange={handleFilterChange}
               >
                 <option value="all">All Categories</option>
                 <option value="furniture">Furniture</option>
@@ -165,8 +159,8 @@ class ProductList extends Component {
               <label htmlFor="sort">Sort by:</label>
               <select
                 id="sort"
-                value={this.state.sortBy}
-                onChange={this.handleSortChange}
+                value={sortBy}
+                onChange={handleSortChange}
               >
                 <option value="name">Name</option>
                 <option value="price-low">Price: Low to High</option>
@@ -178,8 +172,8 @@ class ProductList extends Component {
         </div>
 
         <div className="products-grid">
-          {products.length > 0 ? (
-            products.map(product => (
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map(product => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -194,7 +188,6 @@ class ProductList extends Component {
         </div>
       </div>
     );
-  }
-}
+};
 
 export default ProductList;
