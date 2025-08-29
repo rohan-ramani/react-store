@@ -1,111 +1,107 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback, useMemo, memo } from 'react';
 import ProductCard from './ProductCard';
+import { useImagePreloader, extractImageUrls } from '../utils/imagePreloader';
 
-class ProductList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sortBy: 'name',
-      filterBy: 'all',
-      products: [
-        {
-          id: 1,
-          name: "Victorian Mahogany Writing Desk",
-          era: "Victorian Era (1860s)",
-          description: "Exquisite mahogany writing desk with intricate brass fittings and secret compartments.",
-          price: 2850,
-          originalPrice: 3200,
-          condition: "Excellent",
-          origin: "England",
-          image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: true,
-          category: "furniture"
-        },
-        {
-          id: 2,
-          name: "Art Deco Pearl Necklace",
-          era: "Art Deco (1920s)",
-          description: "Stunning pearl necklace with geometric platinum clasp, typical of the Art Deco period.",
-          price: 1650,
-          condition: "Very Good",
-          origin: "France",
-          image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: false,
-          category: "jewelry"
-        },
-        {
-          id: 3,
-          name: "Ming Dynasty Porcelain Vase",
-          era: "Ming Dynasty (16th Century)",
-          description: "Rare blue and white porcelain vase with traditional dragon motifs.",
-          price: 8500,
-          condition: "Good",
-          origin: "China",
-          image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: true,
-          category: "art"
-        },
-        {
-          id: 4,
-          name: "Edwardian Silver Tea Set",
-          era: "Edwardian Era (1905)",
-          description: "Complete sterling silver tea service with ornate engravings and original hallmarks.",
-          price: 1200,
-          condition: "Excellent",
-          origin: "England",
-          image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop",
-          inStock: false,
-          isRare: false,
-          category: "collectibles"
-        },
-        {
-          id: 5,
-          name: "Louis XVI Armchair",
-          era: "Louis XVI Period (1780s)",
-          description: "Authentic French armchair with original silk upholstery and gilded wood frame.",
-          price: 4200,
-          condition: "Very Good",
-          origin: "France",
-          image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: true,
-          category: "furniture"
-        },
-        {
-          id: 6,
-          name: "Victorian Cameo Brooch",
-          era: "Victorian Era (1870s)",
-          description: "Delicate shell cameo brooch set in 14k gold with intricate detailing.",
-          price: 450,
-          condition: "Excellent",
-          origin: "Italy",
-          image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop",
-          inStock: true,
-          isRare: false,
-          category: "jewelry"
-        }
-      ]
-    };
-  }
+const ProductList = memo(({ onAddToCart, searchTerm }) => {
+  const [sortBy, setSortBy] = useState('name');
+  const [filterBy, setFilterBy] = useState('all');
+  const [products] = useState([
+    {
+      id: 1,
+      name: "Victorian Mahogany Writing Desk",
+      era: "Victorian Era (1860s)",
+      description: "Exquisite mahogany writing desk with intricate brass fittings and secret compartments.",
+      price: 2850,
+      originalPrice: 3200,
+      condition: "Excellent",
+      origin: "England",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: true,
+      category: "furniture"
+    },
+    {
+      id: 2,
+      name: "Art Deco Pearl Necklace",
+      era: "Art Deco (1920s)",
+      description: "Stunning pearl necklace with geometric platinum clasp, typical of the Art Deco period.",
+      price: 1650,
+      condition: "Very Good",
+      origin: "France",
+      image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: false,
+      category: "jewelry"
+    },
+    {
+      id: 3,
+      name: "Ming Dynasty Porcelain Vase",
+      era: "Ming Dynasty (16th Century)",
+      description: "Rare blue and white porcelain vase with traditional dragon motifs.",
+      price: 8500,
+      condition: "Good",
+      origin: "China",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: true,
+      category: "art"
+    },
+    {
+      id: 4,
+      name: "Edwardian Silver Tea Set",
+      era: "Edwardian Era (1905)",
+      description: "Complete sterling silver tea service with ornate engravings and original hallmarks.",
+      price: 1200,
+      condition: "Excellent",
+      origin: "England",
+      image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop",
+      inStock: false,
+      isRare: false,
+      category: "collectibles"
+    },
+    {
+      id: 5,
+      name: "Louis XVI Armchair",
+      era: "Louis XVI Period (1780s)",
+      description: "Authentic French armchair with original silk upholstery and gilded wood frame.",
+      price: 4200,
+      condition: "Very Good",
+      origin: "France",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: true,
+      category: "furniture"
+    },
+    {
+      id: 6,
+      name: "Victorian Cameo Brooch",
+      era: "Victorian Era (1870s)",
+      description: "Delicate shell cameo brooch set in 14k gold with intricate detailing.",
+      price: 450,
+      condition: "Excellent",
+      origin: "Italy",
+      image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop",
+      inStock: true,
+      isRare: false,
+      category: "jewelry"
+    }
+  ]);
 
-  handleSortChange = (e) => {
-    this.setState({ sortBy: e.target.value });
-  }
+  const handleSortChange = useCallback((e) => {
+    setSortBy(e.target.value);
+  }, []);
 
-  handleFilterChange = (e) => {
-    this.setState({ filterBy: e.target.value });
-  }
+  const handleFilterChange = useCallback((e) => {
+    setFilterBy(e.target.value);
+  }, []);
 
-  getSortedAndFilteredProducts = () => {
-    let filteredProducts = this.state.products;
+  const filteredProducts = useMemo(() => {
+    let filtered = products;
 
     // Apply search filter if provided
-    if (this.props.searchTerm) {
-      const searchLower = this.props.searchTerm.toLowerCase();
-      filteredProducts = filteredProducts.filter(product =>
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(searchLower) ||
         product.description.toLowerCase().includes(searchLower) ||
         product.era.toLowerCase().includes(searchLower)
@@ -113,15 +109,15 @@ class ProductList extends Component {
     }
 
     // Apply category filter
-    if (this.state.filterBy !== 'all') {
-      filteredProducts = filteredProducts.filter(product =>
-        product.category === this.state.filterBy
+    if (filterBy !== 'all') {
+      filtered = filtered.filter(product =>
+        product.category === filterBy
       );
     }
 
     // Apply sorting
-    filteredProducts.sort((a, b) => {
-      switch (this.state.sortBy) {
+    filtered.sort((a, b) => {
+      switch (sortBy) {
         case 'price-low':
           return a.price - b.price;
         case 'price-high':
@@ -134,67 +130,68 @@ class ProductList extends Component {
       }
     });
 
-    return filteredProducts;
-  }
+    return filtered;
+  }, [products, searchTerm, filterBy, sortBy]);
 
-  render() {
-    const { onAddToCart } = this.props;
-    const products = this.getSortedAndFilteredProducts();
+  const imageUrls = useMemo(() => {
+    return extractImageUrls(products);
+  }, [products]);
 
-    return (
-      <div className="product-list">
-        <div className="product-list-header">
-          <h2>Our Antique Collection</h2>
-          <div className="controls">
-            <div className="filter-control">
-              <label htmlFor="filter">Filter by Category:</label>
-              <select
-                id="filter"
-                value={this.state.filterBy}
-                onChange={this.handleFilterChange}
-              >
-                <option value="all">All Categories</option>
-                <option value="furniture">Furniture</option>
-                <option value="jewelry">Jewelry</option>
-                <option value="art">Art & Decor</option>
-                <option value="collectibles">Collectibles</option>
-              </select>
-            </div>
-            
-            <div className="sort-control">
-              <label htmlFor="sort">Sort by:</label>
-              <select
-                id="sort"
-                value={this.state.sortBy}
-                onChange={this.handleSortChange}
-              >
-                <option value="name">Name</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="era">Era</option>
-              </select>
-            </div>
+  useImagePreloader(imageUrls);
+
+  return (
+    <div className="product-list">
+      <div className="product-list-header">
+        <h2>Our Antique Collection</h2>
+        <div className="controls">
+          <div className="filter-control">
+            <label htmlFor="filter">Filter by Category:</label>
+            <select
+              id="filter"
+              value={filterBy}
+              onChange={handleFilterChange}
+            >
+              <option value="all">All Categories</option>
+              <option value="furniture">Furniture</option>
+              <option value="jewelry">Jewelry</option>
+              <option value="art">Art & Decor</option>
+              <option value="collectibles">Collectibles</option>
+            </select>
+          </div>
+          
+          <div className="sort-control">
+            <label htmlFor="sort">Sort by:</label>
+            <select
+              id="sort"
+              value={sortBy}
+              onChange={handleSortChange}
+            >
+              <option value="name">Name</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="era">Era</option>
+            </select>
           </div>
         </div>
-
-        <div className="products-grid">
-          {products.length > 0 ? (
-            products.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={onAddToCart}
-              />
-            ))
-          ) : (
-            <div className="no-products">
-              <p>No products found matching your criteria.</p>
-            </div>
-          )}
-        </div>
       </div>
-    );
-  }
-}
+
+      <div className="products-grid">
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map(product => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={onAddToCart}
+            />
+          ))
+        ) : (
+          <div className="no-products">
+            <p>No products found matching your criteria.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
 
 export default ProductList;

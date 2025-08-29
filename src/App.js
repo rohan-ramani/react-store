@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import './App.css';
 import Header from './components/Header';
 import ProductList from './components/ProductList';
@@ -11,72 +11,66 @@ import ArtDecor from './pages/ArtDecor';
 import Collectibles from './pages/Collectibles';
 import About from './pages/About';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cartItems: [],
-      isCartOpen: false,
-      searchTerm: '',
-      currentPage: 'home'
-    };
-  }
+const App = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState('home');
 
-  handleAddToCart = (product) => {
-    const existingItem = this.state.cartItems.find(item => item.id === product.id);
-    
-    if (existingItem) {
-      this.setState({
-        cartItems: this.state.cartItems.map(item =>
+  const handleAddToCart = useCallback((product) => {
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        return prevItems.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
-        )
-      });
-    } else {
-      this.setState({
-        cartItems: [...this.state.cartItems, { ...product, quantity: 1 }]
-      });
-    }
-  }
-
-  handleRemoveFromCart = (productId) => {
-    this.setState({
-      cartItems: this.state.cartItems.filter(item => item.id !== productId)
+        );
+      } else {
+        return [...prevItems, { ...product, quantity: 1 }];
+      }
     });
-  }
+  }, []);
 
-  handleUpdateQuantity = (productId, newQuantity) => {
-    this.setState({
-      cartItems: this.state.cartItems.map(item =>
+  const handleRemoveFromCart = useCallback((productId) => {
+    setCartItems(prevItems => 
+      prevItems.filter(item => item.id !== productId)
+    );
+  }, []);
+
+  const handleUpdateQuantity = useCallback((productId, newQuantity) => {
+    setCartItems(prevItems =>
+      prevItems.map(item =>
         item.id === productId
           ? { ...item, quantity: newQuantity }
           : item
       )
-    });
-  }
+    );
+  }, []);
 
-  handleCartToggle = () => {
-    this.setState({ isCartOpen: !this.state.isCartOpen });
-  }
+  const handleCartToggle = useCallback(() => {
+    setIsCartOpen(prev => !prev);
+  }, []);
 
-  handleSearch = (searchTerm) => {
-    this.setState({ searchTerm, currentPage: 'products' });
-  }
+  const handleSearch = useCallback((searchTerm) => {
+    setSearchTerm(searchTerm);
+    setCurrentPage('products');
+  }, []);
 
-  handleNavigation = (page) => {
-    this.setState({ currentPage: page, searchTerm: '' });
-  }
+  const handleNavigation = useCallback((page) => {
+    setCurrentPage(page);
+    setSearchTerm('');
+  }, []);
 
-  getCartItemCount = () => {
-    return this.state.cartItems.reduce((total, item) => total + item.quantity, 0);
-  }
+  const cartItemCount = useMemo(() => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  }, [cartItems]);
 
-  renderCurrentPage = () => {
-    const { currentPage, searchTerm } = this.state;
+  const renderCurrentPage = useCallback(() => {
     const commonProps = {
-      onAddToCart: this.handleAddToCart,
-      onNavigate: this.handleNavigation
+      onAddToCart: handleAddToCart,
+      onNavigate: handleNavigation
     };
 
     switch (currentPage) {
@@ -96,40 +90,38 @@ class App extends Component {
       default:
         return (
           <ProductList
-            onAddToCart={this.handleAddToCart}
+            onAddToCart={handleAddToCart}
             searchTerm={searchTerm}
           />
         );
     }
-  }
+  }, [currentPage, searchTerm, handleAddToCart, handleNavigation]);
 
-  render() {
-    return (
-      <div className="App">
-        <Header
-          cartItemCount={this.getCartItemCount()}
-          onCartClick={this.handleCartToggle}
-          onSearch={this.handleSearch}
-          onNavigate={this.handleNavigation}
-          currentPage={this.state.currentPage}
-        />
-        
-        <main className="main-content">
-          {this.renderCurrentPage()}
-        </main>
+  return (
+    <div className="App">
+      <Header
+        cartItemCount={cartItemCount}
+        onCartClick={handleCartToggle}
+        onSearch={handleSearch}
+        onNavigate={handleNavigation}
+        currentPage={currentPage}
+      />
+      
+      <main className="main-content">
+        {renderCurrentPage()}
+      </main>
 
-        <Cart
-          cartItems={this.state.cartItems}
-          isOpen={this.state.isCartOpen}
-          onClose={this.handleCartToggle}
-          onRemoveFromCart={this.handleRemoveFromCart}
-          onUpdateQuantity={this.handleUpdateQuantity}
-        />
+      <Cart
+        cartItems={cartItems}
+        isOpen={isCartOpen}
+        onClose={handleCartToggle}
+        onRemoveFromCart={handleRemoveFromCart}
+        onUpdateQuantity={handleUpdateQuantity}
+      />
 
-        <Footer />
-      </div>
-    );
-  }
-}
+      <Footer />
+    </div>
+  );
+};
 
 export default App;
