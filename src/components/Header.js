@@ -1,33 +1,25 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchTerm: ''
-    };
-  }
+const Header = ({ cartItemCount, onCartClick, onSearch, onNavigate, currentPage }) => {
+  const [searchTerm, setSearchTerm] = useState('');
 
-  handleSearchChange = (e) => {
-    this.setState({ searchTerm: e.target.value });
-  }
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
-  handleSearchSubmit = (e) => {
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (this.props.onSearch) {
-      this.props.onSearch(this.state.searchTerm);
+    if (onSearch) {
+      onSearch(searchTerm);
     }
-  }
+  };
 
-  handleNavClick = (e, page) => {
+  const handleNavClick = (e, page) => {
     e.preventDefault();
-    if (this.props.onNavigate) {
-      this.props.onNavigate(page);
+    if (onNavigate) {
+      onNavigate(page);
     }
-  }
-
-  render() {
-    const { cartItemCount, onCartClick, currentPage } = this.props;
+  };
     
     return (
       <header className="header">
@@ -43,7 +35,7 @@ class Header extends Component {
                 <a 
                   href="#home" 
                   className={currentPage === 'home' ? 'active' : ''}
-                  onClick={(e) => this.handleNavClick(e, 'home')}
+                  onClick={(e) => handleNavClick(e, 'home')}
                 >
                   Home
                 </a>
@@ -52,7 +44,7 @@ class Header extends Component {
                 <a 
                   href="#furniture" 
                   className={currentPage === 'furniture' ? 'active' : ''}
-                  onClick={(e) => this.handleNavClick(e, 'furniture')}
+                  onClick={(e) => handleNavClick(e, 'furniture')}
                 >
                   Furniture
                 </a>
@@ -61,7 +53,7 @@ class Header extends Component {
                 <a 
                   href="#jewelry" 
                   className={currentPage === 'jewelry' ? 'active' : ''}
-                  onClick={(e) => this.handleNavClick(e, 'jewelry')}
+                  onClick={(e) => handleNavClick(e, 'jewelry')}
                 >
                   Jewelry
                 </a>
@@ -70,7 +62,7 @@ class Header extends Component {
                 <a 
                   href="#art" 
                   className={currentPage === 'art' ? 'active' : ''}
-                  onClick={(e) => this.handleNavClick(e, 'art')}
+                  onClick={(e) => handleNavClick(e, 'art')}
                 >
                   Art & Decor
                 </a>
@@ -79,7 +71,7 @@ class Header extends Component {
                 <a 
                   href="#collectibles" 
                   className={currentPage === 'collectibles' ? 'active' : ''}
-                  onClick={(e) => this.handleNavClick(e, 'collectibles')}
+                  onClick={(e) => handleNavClick(e, 'collectibles')}
                 >
                   Collectibles
                 </a>
@@ -88,7 +80,7 @@ class Header extends Component {
                 <a 
                   href="#about" 
                   className={currentPage === 'about' ? 'active' : ''}
-                  onClick={(e) => this.handleNavClick(e, 'about')}
+                  onClick={(e) => handleNavClick(e, 'about')}
                 >
                   About
                 </a>
@@ -97,12 +89,12 @@ class Header extends Component {
           </nav>
 
           <div className="header-actions">
-            <form className="search-form" onSubmit={this.handleSearchSubmit}>
+            <form className="search-form" onSubmit={handleSearchSubmit}>
               <input
                 type="text"
                 placeholder="Search antiques..."
-                value={this.state.searchTerm}
-                onChange={this.handleSearchChange}
+                value={searchTerm}
+                onChange={handleSearchChange}
                 className="search-input"
               />
               <button type="submit" className="search-btn">Search</button>
@@ -115,7 +107,6 @@ class Header extends Component {
         </div>
       </header>
     );
-  }
-}
+};
 
 export default Header;

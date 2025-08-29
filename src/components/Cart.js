@@ -1,46 +1,33 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 
-class Cart extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false
-    };
-  }
+const Cart = ({ cartItems, isOpen, onClose, onRemoveFromCart, onUpdateQuantity }) => {
+  useEffect(() => {
+  }, [isOpen]);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.isOpen !== this.props.isOpen) {
-      this.setState({ isOpen: this.props.isOpen });
+  const handleRemoveItem = (productId) => {
+    if (onRemoveFromCart) {
+      onRemoveFromCart(productId);
     }
-  }
+  };
 
-  handleRemoveItem = (productId) => {
-    if (this.props.onRemoveFromCart) {
-      this.props.onRemoveFromCart(productId);
-    }
-  }
-
-  handleUpdateQuantity = (productId, newQuantity) => {
+  const handleUpdateQuantity = (productId, newQuantity) => {
     if (newQuantity <= 0) {
-      this.handleRemoveItem(productId);
-    } else if (this.props.onUpdateQuantity) {
-      this.props.onUpdateQuantity(productId, newQuantity);
+      handleRemoveItem(productId);
+    } else if (onUpdateQuantity) {
+      onUpdateQuantity(productId, newQuantity);
     }
-  }
+  };
 
-  calculateTotal = () => {
-    return this.props.cartItems.reduce((total, item) => {
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => {
       return total + (item.price * item.quantity);
     }, 0);
-  }
+  };
 
-  handleCheckout = () => {
+  const handleCheckout = () => {
     alert('Thank you for your interest! Checkout functionality would be implemented here.');
-  }
-
-  render() {
-    const { cartItems, isOpen, onClose } = this.props;
-    const total = this.calculateTotal();
+  };
+    const total = calculateTotal();
 
     if (!isOpen) return null;
 
@@ -74,21 +61,21 @@ class Cart extends Component {
                         <div className="cart-item-controls">
                           <div className="quantity-controls">
                             <button 
-                              onClick={() => this.handleUpdateQuantity(item.id, item.quantity - 1)}
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                               className="quantity-btn"
                             >
                               -
                             </button>
                             <span className="quantity">{item.quantity}</span>
                             <button 
-                              onClick={() => this.handleUpdateQuantity(item.id, item.quantity + 1)}
+                              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                               className="quantity-btn"
                             >
                               +
                             </button>
                           </div>
                           <button 
-                            onClick={() => this.handleRemoveItem(item.id)}
+                            onClick={() => handleRemoveItem(item.id)}
                             className="remove-btn"
                           >
                             Remove
@@ -108,7 +95,7 @@ class Cart extends Component {
                   </div>
                   <button 
                     className="checkout-btn"
-                    onClick={this.handleCheckout}
+                    onClick={handleCheckout}
                   >
                     Proceed to Checkout
                   </button>
@@ -122,7 +109,6 @@ class Cart extends Component {
         </div>
       </div>
     );
-  }
-}
+};
 
 export default Cart;

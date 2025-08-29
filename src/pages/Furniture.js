@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import ProductCard from '../components/ProductCard';
 
-class Furniture extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      furnitureProducts: [
+const Furniture = ({ onAddToCart }) => {
+  const [furnitureProducts] = useState([
         {
           id: 1,
           name: "Victorian Mahogany Writing Desk",
@@ -86,11 +83,7 @@ class Furniture extends Component {
           category: "furniture"
         }
       ]
-    };
-  }
-
-  render() {
-    const { onAddToCart } = this.props;
+  );
 
     return (
       <div className="furniture-page">
@@ -134,7 +127,7 @@ class Furniture extends Component {
           <div className="products-container">
             <h2>Available Furniture</h2>
             <div className="products-grid">
-              {this.state.furnitureProducts.map(product => (
+              {furnitureProducts.map(product => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -170,7 +163,6 @@ class Furniture extends Component {
         </section>
       </div>
     );
-  }
-}
+};
 
 export default Furniture;
